@@ -5,8 +5,13 @@ const Comment = require("../schemas/comment");
 
 //show
 router.get("/posts", async (req, res) => {
-  const posts = await Posts.find();
-  res.json({posts});
+  const posts = await Posts.find({}, {postsId: 1, title: 1, authorName: 1}).sort({ dateCreation: - 1});
+  if (posts.length > 0 ) {
+  res.json({result: posts});
+  }
+      else {
+       return res.status(400).json({ message: "failed to fetch user list" });
+      }
 });
 
 router.get('/', (req, res) => {
@@ -16,8 +21,13 @@ router.get('/', (req, res) => {
 //select id
 router.get("/posts/:postsId", async (req, res) => {
    const { postsId } = req.params;
-	 const posts = await Posts.find({ postsId });
-        res.json({posts});
+	 const posts = await Posts.find({ postsId: postsId });
+    if (posts.length) {
+        res.json({result : posts});
+      }
+      else {
+       return res.status(400).json({ message: "user information not found" });
+      }
 });
 
 //input posts
